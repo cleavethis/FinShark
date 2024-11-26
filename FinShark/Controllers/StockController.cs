@@ -45,9 +45,30 @@ namespace FinShark.Controllers
             var stockModel = stockDto.ToStockFromCreateDTO();
             _context.Stock.Add(stockModel);
             _context.SaveChanges();
-          
-            return CreatedAtAction(nameof(getById), new { id = stockModel.stockId}, stockModel);
 
+            return CreatedAtAction(nameof(getById), new { id = stockModel.stockId }, stockModel);
+
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+
+        public IActionResult Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto)
+        {
+            var stockModel = _context.Stock.FirstOrDefault(x => x.stockId == id);
+
+            if (stockModel == null)
+            { return NotFound(); }
+
+            stockModel.symbol = updateDto.symbol;
+            stockModel.purchase = updateDto.purchase;
+            stockModel.companyName = updateDto.companyName;
+            stockModel.marketCap = updateDto.marketCap;
+            stockModel.lastDiv = updateDto.lastDiv;
+            stockModel.industry = updateDto.industry;
+
+            _context.SaveChanges();
+            return Ok(stockModel.ToStockDto());
         }
     }
            
