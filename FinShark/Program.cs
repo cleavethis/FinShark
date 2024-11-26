@@ -1,7 +1,7 @@
 using FinShark.Data;
 using FinShark.Interfaces;
 using Microsoft.EntityFrameworkCore;
-
+using FinShark.Repository;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -12,7 +12,8 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-builder.Services.AddScoped<IStockRepository, IStockRepository>();
+
+builder.Services.AddScoped<IStockRepository, StockRepository>();
 
 
 
