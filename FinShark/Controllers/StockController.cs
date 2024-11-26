@@ -4,6 +4,7 @@ using FinShark.Mappers;
 using FinShark.Dtos.Stock;
 using FinShark.Models;
 using Microsoft.OpenApi.Validations;
+using Microsoft.EntityFrameworkCore;
 
 namespace FinShark.Controllers
 {
@@ -18,18 +19,19 @@ namespace FinShark.Controllers
         }
 
         [HttpGet]
-        public IActionResult getAll()
+        public async Task<IActionResult> getAll()
         {
-            var stocks = _context.Stock.ToList().Select(s => s.ToStockDto());
+            var stocks = await _context.Stock.ToListAsync();
+            var stockDto = stocks.Select(s => s.ToStockDto());
 
-            return Ok(stocks);
+            return Ok(stockDto);
         }
 
         [HttpGet("{id}")]
 
-        public IActionResult getById([FromRoute] int id)
+        public async Task<IActionResult> getById([FromRoute] int id)
         {
-            var stock = _context.Stock.Find(id);
+            var stock = await _context.Stock.FindAsync(id);
 
             if (stock == null)
             {
@@ -41,11 +43,11 @@ namespace FinShark.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] CreateStockRequestDto stockDto)
+        public async Task<IActionResult> Create([FromBody] CreateStockRequestDto stockDto)
         {
             var stockModel = stockDto.ToStockFromCreateDTO();
-            _context.Stock.Add(stockModel);
-            _context.SaveChanges();
+            await _context.Stock.AddAsync(stockModel);
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(getById), new { id = stockModel.stockId }, stockModel);
 
@@ -54,7 +56,7 @@ namespace FinShark.Controllers
         [HttpPut]
         [Route("{id}")]
 
-        public IActionResult Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto)
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto)
         {
             var stockModel = _context.Stock.FirstOrDefault(x => x.stockId == id);
 
@@ -68,21 +70,21 @@ namespace FinShark.Controllers
             stockModel.lastDiv = updateDto.lastDiv;
             stockModel.industry = updateDto.industry;
 
-            _context.SaveChanges();
+           await _context.SaveChangesAsync();
             return Ok(stockModel.ToStockDto());
         }
 
         [HttpDelete]
         [Route("{id}")]
 
-        public IActionResult Delete([FromRoute] int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
             var stockModel = _context.Stock.FirstOrDefault(x => x.stockId == id);
 
             if (stockModel == null) { return NotFound(); };
 
-            _context.Stock.Remove(stockModel);
-            _context.SaveChanges();
+             _context.Stock.Remove(stockModel);
+            await _context.SaveChangesAsync();
 
             return NoContent();
 
@@ -90,9 +92,9 @@ namespace FinShark.Controllers
     
 
         [HttpGet("find")]
-        public IActionResult FindStock(string searchTerm)
+        public async Task<IActionResult> FindStock(string searchTerm)
         {
-            var stocks = _context.Stock.Where(x => x.companyName.Contains(searchTerm)).ToList();
+            var stocks = await _context.Stock.Where(x => x.companyName.Contains(searchTerm)).ToListAsync();
             return Ok(stocks);
         }
     }
