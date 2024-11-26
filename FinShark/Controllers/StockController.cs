@@ -5,6 +5,7 @@ using FinShark.Dtos.Stock;
 using FinShark.Models;
 using Microsoft.OpenApi.Validations;
 using Microsoft.EntityFrameworkCore;
+using FinShark.Interfaces;
 
 namespace FinShark.Controllers
 {
@@ -13,15 +14,17 @@ namespace FinShark.Controllers
     public class StockController : ControllerBase
     {
         private readonly ApplicationDBContext _context;
-        public StockController(ApplicationDBContext context)
+        private readonly IStockRepository _stockRepo;
+        public StockController(ApplicationDBContext context, IStockRepository stockRepo)
         {
+            _stockRepo = stockRepo;
             _context = context;
         }
 
         [HttpGet]
         public async Task<IActionResult> getAll()
         {
-            var stocks = await _context.Stock.ToListAsync();
+            var stocks = await _stockRepo.GetAllAsync();
             var stockDto = stocks.Select(s => s.ToStockDto());
 
             return Ok(stockDto);
