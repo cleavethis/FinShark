@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using FinShark.Mappers;
 using FinShark.Dtos.Stock;
 using FinShark.Models;
+using Microsoft.OpenApi.Validations;
 
 namespace FinShark.Controllers
 {
@@ -86,6 +87,13 @@ namespace FinShark.Controllers
             return NoContent();
 
         }
+    
+
+        [HttpGet("find")]
+        public IActionResult FindStock(string searchTerm)
+        {
+            var stocks = _context.Stock.Where(x => x.companyName.Contains(searchTerm)).ToList();
+            return Ok(stocks);
+        }
     }
-           
 }
