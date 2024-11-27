@@ -11,6 +11,7 @@ namespace FinShark.Interfaces
         Task<Stock?> UpdateAsync(int id, UpdateStockRequestDto stockDto);
         Task<Stock?> DeleteAsync(int id);
         Task<List<Stock?>> FindStockAsync(string searchTerm);
+        Task<bool> StockExists(int id);
 
     }
 }

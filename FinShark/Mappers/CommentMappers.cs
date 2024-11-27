@@ -19,5 +19,17 @@ namespace FinShark.Mappers
             };
 
         }
+
+        public static Comment ToCommentFromCreate(this CreateCommentDto commentDto, int stockId)
+        {
+            return new Comment
+            {
+
+                title = commentDto.title,
+                content = commentDto.content,
+                stockId = stockId
+            };
+
+        }
     }
 }

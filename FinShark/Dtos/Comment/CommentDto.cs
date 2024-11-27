@@ -6,6 +6,6 @@
         public int? stockId { get; set; }
         public String title { get; set; } = string.Empty;
         public string content { get; set; } = string.Empty;
-        public DateTime createdOn { get; set; }
+        public DateTime createdOn { get; set; } = DateTime.Now;
     }
 }
