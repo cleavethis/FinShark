@@ -3,6 +3,7 @@ using FinShark.Models;
 using FinShark.Data;
 using Microsoft.EntityFrameworkCore;
 using FinShark.Dtos.Stock;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace FinShark.Repository
 {
@@ -17,7 +18,7 @@ namespace FinShark.Repository
 
         public async Task<List<Stock>> GetAllAsync()
         {
-            return await _context.Stock.ToListAsync();
+            return await _context.Stock.Include(c => c.comments).ToListAsync();
         }
 
         public async Task<Stock> CreateAsync(Stock stockModel)
@@ -41,13 +42,13 @@ namespace FinShark.Repository
 
         public async Task<Stock?> GetByIdAsync(int id)
         {
-            return await _context.Stock.FindAsync(id);
+            return await _context.Stock.Include(c => c.comments).FirstOrDefaultAsync(i => i.stockId == id);
         }
 
         public async Task<Stock?> UpdateAsync(int id, UpdateStockRequestDto stockDto)
         {
             var existingStock = await _context.Stock.FirstOrDefaultAsync(x => x.stockId == id);
-            if (existingStock != null)
+            if (existingStock == null)
             {
                 return null;
             }

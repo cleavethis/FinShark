@@ -16,6 +16,7 @@ namespace FinShark.Mappers
                 lastDiv = stockModel.lastDiv,
                 industry = stockModel.industry,
                 marketCap = stockModel.marketCap,
+                comments = stockModel.comments.Select(c => c.ToCommentDto()).ToList(),
             };
         }
 
@@ -29,6 +30,7 @@ namespace FinShark.Mappers
                 lastDiv = stockDto.lastDiv,
                 industry = stockDto.industry,
                 marketCap = stockDto.marketCap,
+              
             };
         }
     }
